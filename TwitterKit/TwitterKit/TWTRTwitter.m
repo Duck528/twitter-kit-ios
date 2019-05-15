@@ -353,12 +353,16 @@ static TWTRTwitter *sharedTwitter;
     self.webAuthenticationFlow = [[TWTRWebAuthenticationFlow alloc] initWithSessionStore:self.sessionStore];
 
     __weak typeof(viewController) weakViewController = viewController;
+
+    __block UINavigationController *navigationController = nil;
+
     [self.webAuthenticationFlow beginAuthenticationFlow:^(UIViewController *controller) {
         __strong typeof(weakViewController) strongViewController = weakViewController;
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
+        navigationController = [[UINavigationController alloc] initWithRootViewController:controller];
         [strongViewController presentViewController:navigationController animated:YES completion:nil];
     }
         completion:^(TWTRSession *session, NSError *error) {
+            [navigationController dismissViewControllerAnimated:true completion:nil];
             completion(session, error);
         }];
 }
